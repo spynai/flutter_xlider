@@ -2001,8 +2001,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       );
     }
 
-    Widget tooltipWidget = IgnorePointer(
-        child: Center(
+    Widget tooltipWidget = Center(
       child: FittedBox(
         child: Container(
 //            height: ,
@@ -2020,7 +2019,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                   child: _tooltipHolderWidget),
         ),
       ),
-    ));
+    );
 
     double? top, right, bottom, left;
     switch (_tooltipData.direction) {
