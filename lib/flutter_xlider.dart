@@ -1592,91 +1592,86 @@ class _FlutterSliderState extends State<FlutterSlider>
       top: _rightHandlerYPosition,
       right: right,
       bottom: bottom,
-      child: Listener(
-        child: Draggable(
-            axis: Axis.horizontal,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: ([
-                _tooltip(
-                    side: 'right',
-                    value: _outputUpperValue,
-                    opacity: _rightTooltipOpacity,
-                    animation: _rightTooltipAnimation),
-                rightHandler,
-              ]),
-            ),
-            feedback: Container(
-//                            width: 20,
-//                            height: 20,
-//                            color: Colors.blue.withOpacity(0.7),
-                )),
-        onPointerMove: (_) {
-          __dragging = true;
+      child: Stack(clipBehavior: Clip.none, children: [
+        _tooltip(
+            side: 'right',
+            value: _outputUpperValue,
+            opacity: _rightTooltipOpacity,
+            animation: _rightTooltipAnimation),
+        Listener(
+          child: Draggable(
+              axis: Axis.horizontal,
+              child: rightHandler,
+              feedback: Container()),
+          onPointerMove: (_) {
+            __dragging = true;
 
-          if (!_tooltipData.disabled! &&
-              _tooltipData.alwaysShowTooltip == false) {
-            _rightTooltipOpacity = 1;
-          }
-          _rightHandlerMove(_);
-        },
-        onPointerDown: (_) {
-          if (widget.disabled ||
-              (widget.rightHandler != null && widget.rightHandler!.disabled))
-            return;
+            if (!_tooltipData.disabled! &&
+                _tooltipData.alwaysShowTooltip == false) {
+              _rightTooltipOpacity = 1;
+            }
+            _rightHandlerMove(_);
+          },
+          onPointerDown: (_) {
+            if (widget.disabled ||
+                (widget.rightHandler != null && widget.rightHandler!.disabled))
+              return;
 
-          _renderBoxInitialization();
+            _renderBoxInitialization();
 
-          xDragTmp = (_.position.dx - _containerLeft - _rightHandlerXPosition!);
-          yDragTmp = (_.position.dy - _containerTop - _rightHandlerYPosition!);
+            xDragTmp =
+                (_.position.dx - _containerLeft - _rightHandlerXPosition!);
+            yDragTmp =
+                (_.position.dy - _containerTop - _rightHandlerYPosition!);
 
-          if (!_tooltipData.disabled! &&
-              _tooltipData.alwaysShowTooltip == false) {
-            _rightTooltipOpacity = 1;
-            _rightTooltipAnimationController.forward();
+            if (!_tooltipData.disabled! &&
+                _tooltipData.alwaysShowTooltip == false) {
+              _rightTooltipOpacity = 1;
+              _rightTooltipAnimationController.forward();
 
-            if (widget.lockHandlers) {
-              _leftTooltipOpacity = 1;
-              _leftTooltipAnimationController.forward();
+              if (widget.lockHandlers) {
+                _leftTooltipOpacity = 1;
+                _leftTooltipAnimationController.forward();
+              }
+
+              setState(() {});
+            }
+            if (widget.rangeSlider == false)
+              _leftHandlerScaleAnimationController!.forward();
+            else
+              _rightHandlerScaleAnimationController!.forward();
+
+            _callbacks('onDragStarted', 1);
+          },
+          onPointerUp: (_) {
+            __dragging = false;
+
+            _adjustRightHandlerPosition();
+
+            if (widget.disabled ||
+                (widget.rightHandler != null && widget.rightHandler!.disabled))
+              return;
+
+            _arrangeHandlersZIndex();
+
+            if (widget.rangeSlider == false) {
+              _stopHandlerAnimation(
+                  animation: _leftHandlerScaleAnimation,
+                  controller: _leftHandlerScaleAnimationController);
+            } else {
+              _stopHandlerAnimation(
+                  animation: _rightHandlerScaleAnimation,
+                  controller: _rightHandlerScaleAnimationController);
             }
 
+            _hideTooltips();
+
             setState(() {});
-          }
-          if (widget.rangeSlider == false)
-            _leftHandlerScaleAnimationController!.forward();
-          else
-            _rightHandlerScaleAnimationController!.forward();
 
-          _callbacks('onDragStarted', 1);
-        },
-        onPointerUp: (_) {
-          __dragging = false;
-
-          _adjustRightHandlerPosition();
-
-          if (widget.disabled ||
-              (widget.rightHandler != null && widget.rightHandler!.disabled))
-            return;
-
-          _arrangeHandlersZIndex();
-
-          if (widget.rangeSlider == false) {
-            _stopHandlerAnimation(
-                animation: _leftHandlerScaleAnimation,
-                controller: _leftHandlerScaleAnimationController);
-          } else {
-            _stopHandlerAnimation(
-                animation: _rightHandlerScaleAnimation,
-                controller: _rightHandlerScaleAnimationController);
-          }
-
-          _hideTooltips();
-
-          setState(() {});
-
-          _callbacks('onDragCompleted', 1);
-        },
-      ),
+            _callbacks('onDragCompleted', 1);
+          },
+        )
+      ]),
     );
   }
 
