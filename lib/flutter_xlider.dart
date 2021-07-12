@@ -1466,79 +1466,75 @@ class _FlutterSliderState extends State<FlutterSlider>
     }
 
     return Positioned(
-      key: Key('leftHandler'),
-      left: _leftHandlerXPosition,
-      top: _leftHandlerYPosition,
-      bottom: bottom,
-      right: right,
-      child: Listener(
-        child: Draggable(
-            axis: widget.axis,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _tooltip(
-                    side: 'left',
-                    value: _outputLowerValue,
-                    opacity: _leftTooltipOpacity,
-                    animation: _leftTooltipAnimation),
-                leftHandler,
-              ],
-            ),
-            feedback: Container()),
-        onPointerMove: (_) {
-          __dragging = true;
+        key: Key('leftHandler'),
+        left: _leftHandlerXPosition,
+        top: _leftHandlerYPosition,
+        bottom: bottom,
+        right: right,
+        child: Stack(clipBehavior: Clip.none, children: [
+          _tooltip(
+              side: 'left',
+              value: _outputLowerValue,
+              opacity: _leftTooltipOpacity,
+              animation: _leftTooltipAnimation),
+          Listener(
+            child: Draggable(
+                axis: widget.axis, child: leftHandler, feedback: Container()),
+            onPointerMove: (_) {
+              __dragging = true;
 
-          _leftHandlerMove(_);
-        },
-        onPointerDown: (_) {
-          if (widget.disabled ||
-              (widget.handler != null && widget.handler!.disabled)) return;
+              _leftHandlerMove(_);
+            },
+            onPointerDown: (_) {
+              if (widget.disabled ||
+                  (widget.handler != null && widget.handler!.disabled)) return;
 
-          _renderBoxInitialization();
+              _renderBoxInitialization();
 
-          xDragTmp = (_.position.dx - _containerLeft - _leftHandlerXPosition!);
-          yDragTmp = (_.position.dy - _containerTop - _leftHandlerYPosition!);
+              xDragTmp =
+                  (_.position.dx - _containerLeft - _leftHandlerXPosition!);
+              yDragTmp =
+                  (_.position.dy - _containerTop - _leftHandlerYPosition!);
 
-          if (!_tooltipData.disabled! &&
-              _tooltipData.alwaysShowTooltip == false) {
-            _leftTooltipOpacity = 1;
-            _leftTooltipAnimationController.forward();
+              if (!_tooltipData.disabled! &&
+                  _tooltipData.alwaysShowTooltip == false) {
+                _leftTooltipOpacity = 1;
+                _leftTooltipAnimationController.forward();
 
-            if (widget.lockHandlers) {
-              _rightTooltipOpacity = 1;
-              _rightTooltipAnimationController.forward();
-            }
-          }
+                if (widget.lockHandlers) {
+                  _rightTooltipOpacity = 1;
+                  _rightTooltipAnimationController.forward();
+                }
+              }
 
-          _leftHandlerScaleAnimationController!.forward();
+              _leftHandlerScaleAnimationController!.forward();
 
-          setState(() {});
+              setState(() {});
 
-          _callbacks('onDragStarted', 0);
-        },
-        onPointerUp: (_) {
-          __dragging = false;
+              _callbacks('onDragStarted', 0);
+            },
+            onPointerUp: (_) {
+              __dragging = false;
 
-          _adjustLeftHandlerPosition();
+              _adjustLeftHandlerPosition();
 
-          if (widget.disabled ||
-              (widget.handler != null && widget.handler!.disabled)) return;
+              if (widget.disabled ||
+                  (widget.handler != null && widget.handler!.disabled)) return;
 
-          _arrangeHandlersZIndex();
+              _arrangeHandlersZIndex();
 
-          _stopHandlerAnimation(
-              animation: _leftHandlerScaleAnimation,
-              controller: _leftHandlerScaleAnimationController);
+              _stopHandlerAnimation(
+                  animation: _leftHandlerScaleAnimation,
+                  controller: _leftHandlerScaleAnimationController);
 
-          _hideTooltips();
+              _hideTooltips();
 
-          setState(() {});
+              setState(() {});
 
-          _callbacks('onDragCompleted', 0);
-        },
-      ),
-    );
+              _callbacks('onDragCompleted', 0);
+            },
+          ),
+        ]));
   }
 
   void _adjustLeftHandlerPosition() {
